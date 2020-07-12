@@ -2,7 +2,7 @@ import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import "./body.css";
-import "antd/dist/antd.css";
+//import "antd/dist/antd.css";
 import { ApolloProvider } from "@apollo/react-hooks";
 import { Layout } from "antd";
 import cubejs from "@cubejs-client/core";

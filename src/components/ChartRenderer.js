@@ -2,6 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import { useCubeQuery } from "@cubejs-client/react";
 import { Spin, Row, Col, Statistic, Table } from "antd";
+import "./recharts-theme.less";
+import moment from "moment";
+import numeral from "numeral";
 import {
   CartesianGrid,
   PieChart,
@@ -20,20 +23,44 @@ import {
   Line
 } from "recharts";
 
-const CartesianChart = ({ resultSet, children, ChartComponent }) => (
-  <ResponsiveContainer width="100%" height={350}>
-    <ChartComponent data={resultSet.chartPivot()}>
-      <XAxis dataKey="x" />
-      <YAxis />
-      <CartesianGrid />
-      {children}
-      <Legend />
-      <Tooltip />
-    </ChartComponent>
-  </ResponsiveContainer>
-);
+const numberFormatter = item => numeral(item).format("0,0");
+const dateFormatter = item => moment(item).format("MMM YY");
+const colors = ["#7DB3FF", "#49457B", "#FF7C78"];
+const xAxisFormatter = (item) => {
+  if (moment(item).isValid()) {
+    return dateFormatter(item)
+  } else {
+    return item;
+  }
+}
 
-const colors = ["#FF6492", "#141446", "#7A77FF"];
+const CartesianChart = ({ resultSet, children, ChartComponent }) => (
+    <ResponsiveContainer width="100%" height={350}>
+      <ChartComponent margin={{ left: -10 }} data={resultSet.chartPivot()}>
+        <XAxis axisLine={false} tickLine={false} tickFormatter={xAxisFormatter} dataKey="x" minTickGap={20} />
+        <YAxis axisLine={false} tickLine={false} tickFormatter={numberFormatter} />
+        <CartesianGrid vertical={false} />
+        { children }
+        <Legend />
+        <Tooltip labelFormatter={dateFormatter} formatter={numberFormatter} />
+      </ChartComponent>
+    </ResponsiveContainer>
+)
+
+// const CartesianChart = ({ resultSet, children, ChartComponent }) => (
+//   <ResponsiveContainer width="100%" height={350}>
+//     <ChartComponent data={resultSet.chartPivot()}>
+//       <XAxis dataKey="x" />
+//       <YAxis />
+//       <CartesianGrid />
+//       {children}
+//       <Legend />
+//       <Tooltip />
+//     </ChartComponent>
+//   </ResponsiveContainer>
+// );
+
+//const colors = ["#FF6492", "#141446", "#7A77FF"];
 
 const stackedChartData = resultSet => {
   const data = resultSet
